@@ -1,6 +1,9 @@
 #include <iostream>
+#include <stdint.h>
 
+using namespace std;
 
 void subbyte(){
-    std::cout<<"check"<<std::endl;
+    #include "sbox.hpp"
+    cout<<sbox[0x0f][0x0f]<<endl;
 }
