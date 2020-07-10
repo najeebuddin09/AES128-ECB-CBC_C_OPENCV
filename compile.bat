@@ -1,8 +1,8 @@
 g++ ^
                 -g ^
-                %1 ^
+                ./subbyte.cpp ./encrypt_block.cpp ./AES_Encoder.cpp ^
                 -o ^
-                %2 ^
+                output.exe ^
                 -I C:\OpenCV\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\include ^
                 -L C:\OpenCV\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\x64\mingw\bin ^
                 -llibopencv_calib3d411 ^
@@ -18,4 +18,5 @@ g++ ^
                 -llibopencv_photo411 ^
                 -llibopencv_stitching411 ^
                 -llibopencv_video411 ^
-                -llibopencv_videoio412
+                -llibopencv_videoio411
+.\output.exe
