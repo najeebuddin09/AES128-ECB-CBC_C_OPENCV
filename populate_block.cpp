@@ -1,1 +1,0 @@
-// function that return Mat object with the values of array elements passed to it
