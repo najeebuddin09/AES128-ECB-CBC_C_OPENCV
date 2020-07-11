@@ -13,6 +13,7 @@ using namespace cv;
 void encrypt_block();
 Mat subbyte(Mat);
 Mat shift_rows(Mat);
+Mat mix_columns(Mat);
 void log_block(Mat);
 void log(const char *);
 void log_Mat_value(uint8_t);

@@ -17,10 +17,17 @@ void encrypt_block(){
     } 
     Mat substituted_block = subbyte(block);
     Mat shifted_block = shift_rows(substituted_block);
+    Mat mixed_column_block = mix_columns(shifted_block);
     
-    log("block of data before shifting");
+    log("block of data");
+    log_block(block); 
+    
+    log("block of data after substitution");
     log_block(substituted_block); 
     
     log("block of data after shifting");
     log_block(shifted_block);
+    
+    log("block of data after mix column");
+    log_block(mixed_column_block); 
 }
