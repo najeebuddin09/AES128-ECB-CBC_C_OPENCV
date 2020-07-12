@@ -10,7 +10,7 @@ using namespace std;
 using namespace cv;
 
 //prototypes of all function inside the project
-void encrypt_block();
+Mat encrypt_block(Mat, Mat);
 Mat subbyte(Mat);
 Mat shift_rows(Mat);
 Mat mix_columns(Mat);

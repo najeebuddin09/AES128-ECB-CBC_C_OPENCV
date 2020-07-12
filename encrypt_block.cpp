@@ -1,6 +1,59 @@
 #include "AES.hpp"
 
-void encrypt_block(){
+Mat encrypt_block(Mat block, Mat key){
+    //create a copy of the block
+    Mat copy_of_block(ROWS,COLS,CV_8UC1);
+    for (int i=0; i<ROWS; i++){
+        for (int j=0; j<COLS; j++){
+            copy_of_block.at<uint8_t>(i,j) = block.at<uint8_t>(i,j);
+        }
+    }
+    //creat a copy of key
+    Mat copy_of_key(ROWS,COLS,CV_8UC1);
+    for (int i=0; i<ROWS; i++){
+        for (int j=0; j<COLS; j++){
+            copy_of_key.at<uint8_t>(i,j) = key.at<uint8_t>(i,j);
+        }
+    }
+
+    copy_of_block = add_round_key(copy_of_block,copy_of_key);
+    
+    //log("after add round key");
+    //log_block(copy_of_block); 
+    
+    for (int i=0; i<9 ; i++){
+        copy_of_key = key_schedule(copy_of_key);
+        //printf("after key schedule %d\n",i);
+        //log_block(copy_of_block); 
+        copy_of_block = subbyte(copy_of_block);
+        //printf("after subbyte %d\n",i);
+        //log_block(copy_of_block); 
+        copy_of_block = shift_rows(copy_of_block);
+        //printf("after shift rows %d\n",i);
+        //log_block(copy_of_block); 
+        copy_of_block = mix_columns(copy_of_block);
+        //printf("after mix columns %d\n",i);
+        //log_block(copy_of_block); 
+        copy_of_block = add_round_key(copy_of_block,copy_of_key);
+        //printf("after mix add round key %d\n",i);
+        //log_block(copy_of_block); 
+    }    
+
+    copy_of_key = key_schedule(copy_of_key);
+    //printf("after final key schedule\n");
+    //log_block(copy_of_block); 
+    copy_of_block = subbyte(copy_of_block);
+    //printf("after final subbyte \n");
+    //log_block(copy_of_block); 
+    copy_of_block = shift_rows(copy_of_block);
+    //printf("after final shift rows\n");
+    //log_block(copy_of_block); 
+    copy_of_block = add_round_key(copy_of_block,copy_of_key);
+
+    return copy_of_block;
+}
+//test for key scheduling
+/*
     uint8_t test_key[ROWS][COLS] = {
         {0x2b, 0x28, 0xab, 0x09},
         {0x7e, 0xae, 0xf7, 0xcf},
@@ -26,7 +79,8 @@ void encrypt_block(){
     
     log("key after second scheduling");
     log_block(key_after_scheduling); 
-}
+*/
+//test for all the aes steps (functions)
 /*
     //cout<<"inside the encrypt_block function"<<endl;
     uint8_t test_block[ROWS][COLS] = {
