@@ -1,6 +1,33 @@
 #include "AES.hpp"
 
 void encrypt_block(){
+    uint8_t test_key[ROWS][COLS] = {
+        {0x2b, 0x28, 0xab, 0x09},
+        {0x7e, 0xae, 0xf7, 0xcf},
+        {0x15, 0xd2, 0x15, 0x4f},
+        {0x16, 0xa6, 0x88, 0x3c}
+    };
+    Mat key(ROWS,COLS,CV_8UC1);
+    for (int i=0; i<ROWS; i++){
+        for (int j=0; j<COLS; j++){
+            key.at<uint8_t>(i,j) = test_key[i][j];
+        }
+    }
+    
+    Mat key_after_scheduling = key_schedule(key);
+    
+    log("initial key");
+    log_block(key); 
+    
+    log("key after first scheduling");
+    log_block(key_after_scheduling); 
+    
+    key_after_scheduling = key_schedule(key_after_scheduling);
+    
+    log("key after second scheduling");
+    log_block(key_after_scheduling); 
+}
+/*
     //cout<<"inside the encrypt_block function"<<endl;
     uint8_t test_block[ROWS][COLS] = {
         {0x19, 0xa0, 0x9a, 0xe9},
@@ -48,4 +75,4 @@ void encrypt_block(){
     log("block of data after adding round key");
     log_block(after_adding_round_key); 
 
-}
+*/
