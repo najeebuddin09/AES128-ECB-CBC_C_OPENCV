@@ -53,5 +53,10 @@ Mat decrypt_block(Mat block, Mat key){
     //log_block(copy_of_key); 
     copy_of_block = add_round_key(copy_of_block,copy_of_key);
 
+    //release memory allocated for keys global array
+    for (int i=0; i<11; i++){
+        delete keys[i];
+    }
+
     return copy_of_block;
 }
