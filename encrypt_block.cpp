@@ -22,9 +22,9 @@ Mat encrypt_block(Mat block, Mat key){
     //log_block(copy_of_block); 
     
     for (int i=0; i<9 ; i++){
-        copy_of_key = key_schedule(copy_of_key);
+        copy_of_key = key_schedule(copy_of_key,i);
         //printf("after key schedule %d\n",i);
-        //log_block(copy_of_block); 
+        //log_block(copy_of_key); 
         copy_of_block = subbyte(copy_of_block);
         //printf("after subbyte %d\n",i);
         //log_block(copy_of_block); 
@@ -39,9 +39,9 @@ Mat encrypt_block(Mat block, Mat key){
         //log_block(copy_of_block); 
     }    
 
-    copy_of_key = key_schedule(copy_of_key);
-    //printf("after final key schedule\n");
-    //log_block(copy_of_block); 
+    copy_of_key = key_schedule(copy_of_key,9);
+    //printf("after final key schedule in encryption\n");
+    //log_block(copy_of_key); 
     copy_of_block = subbyte(copy_of_block);
     //printf("after final subbyte \n");
     //log_block(copy_of_block); 

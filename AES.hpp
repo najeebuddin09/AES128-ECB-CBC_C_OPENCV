@@ -15,11 +15,19 @@ Mat subbyte(Mat);
 Mat shift_rows(Mat);
 Mat mix_columns(Mat);
 Mat add_round_key(Mat,Mat);
-Mat key_schedule(Mat);
+Mat key_schedule(Mat,unsigned int);
+void find_keys(Mat);
 void log_block(Mat);
 void log(const char *);
 void log_Mat_value(uint8_t);
+Mat decrypt_block(Mat,Mat);
+Mat inverse_mix_columns(Mat);
+Mat inverse_subbyte(Mat);
+Mat inverse_shift_rows(Mat);
 
 //macros
 #define ROWS 4
 #define COLS 4
+
+//globals
+extern Mat * keys[11];
