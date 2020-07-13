@@ -1,7 +1,7 @@
 g++ ^
                 -g ^
                 ./subbyte.cpp ./encrypt_block.cpp ./AES_decoder.cpp ./shift_rows.cpp ./logging_functions.cpp ./mix_columns.cpp ./add_round_key.cpp ^
-                ./key_schedule.cpp ./inverse_subbyte.cpp ./inverse_mix_columns.cpp ./inverse_shift_rows.cpp ./decrypt_block.cpp^
+                ./data_division_into_blocks_function.cpp ./key_schedule.cpp ./inverse_subbyte.cpp ./inverse_mix_columns.cpp ./inverse_shift_rows.cpp ./decrypt_block.cpp^
                 -o ^
                 output.exe ^
                 -I C:\OpenCV\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\include ^

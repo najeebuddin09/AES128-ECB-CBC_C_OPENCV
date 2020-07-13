@@ -24,6 +24,8 @@ Mat decrypt_block(Mat,Mat);
 Mat inverse_mix_columns(Mat);
 Mat inverse_subbyte(Mat);
 Mat inverse_shift_rows(Mat);
+Mat slice_of_data(Mat,int,int);
+void put_back_together(Mat *, Mat, int, int);
 
 //macros
 #define ROWS 4
