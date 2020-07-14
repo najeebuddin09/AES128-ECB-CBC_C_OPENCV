@@ -26,6 +26,7 @@ Mat inverse_subbyte(Mat);
 Mat inverse_shift_rows(Mat);
 Mat slice_of_data(Mat,int,int);
 void put_back_together(Mat *, Mat, int, int);
+Mat manipulate_data_any_size_ecb(Mat,Mat, Mat callback_function(Mat,Mat));
 
 //macros
 #define ROWS 4

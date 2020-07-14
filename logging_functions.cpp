@@ -5,8 +5,8 @@ void log(const char * str){
 }
 
 void log_block(Mat block){
-    for (int i=0; i<ROWS; i++){
-        for (int j=0; j<COLS; j++){
+    for (int i=0; i<block.rows; i++){
+        for (int j=0; j<block.cols; j++){
             cout<<std::hex<<(int)block.at<uint8_t>(i,j)<<' ';
         }
         cout<<endl;

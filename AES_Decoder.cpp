@@ -33,28 +33,15 @@ int main(int argc, char ** argv){
         }
     } 
 
-    Mat crop, encrypted_block = Mat::zeros(block.rows+(block.rows%ROWS),block.cols+(block.cols%COLS),CV_8UC1); 
-    int x_axis = 0, y_axis = 0;
-    for (int i=0; y_axis < block.rows; i++){
-        for (int j=0; x_axis < block.cols; j++){
-            crop = slice_of_data(block, x_axis, y_axis);
-            crop = encrypt_block(crop,key);
-            put_back_together(&encrypted_block, crop, x_axis, y_axis);
-            printf("x_axis %d y_axis %d\n",x_axis,y_axis);
-            log_block(crop);
-            x_axis += COLS;
-        }
-        x_axis = 0;
-        y_axis += ROWS;
-    }
+    Mat encrypted_block = manipulate_data_any_size_ecb(block,key,encrypt_block);    
 
     log("encrypted data"); 
-    for (int i=0; i<6; i++){
-        for (int j=0; j<6; j++){
-            cout<<hex<<(int)encrypted_block.at<uint8_t>(i,j)<<" ";
-        }
-        cout<<endl;
-    } 
+    log_block(encrypted_block);
+    
+    Mat decrypted_block = manipulate_data_any_size_ecb(encrypted_block,key,decrypt_block);    
+
+    log("decrypted data"); 
+    log_block(decrypted_block);
 
     return 0;
 }
