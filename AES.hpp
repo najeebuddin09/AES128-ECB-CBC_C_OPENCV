@@ -33,6 +33,7 @@ Mat manipulate_data_any_size_ecb(Mat,Mat, Mat callback_function(Mat,Mat));
 int char_count(fstream *);
 Mat read_and_copy_text_file_to_mat_object(const char * );
 void convert_mat_object_into_string_and_store_it_in_a_file(Mat, const char *);
+Mat manipulate_data_any_size_cbc(Mat, Mat , Mat , Mat callback_function(Mat,Mat));
 
 //macros
 #define ROWS 4
