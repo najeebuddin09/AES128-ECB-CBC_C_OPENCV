@@ -4,6 +4,9 @@
 #include <iostream>
 #include <sstream>
 #include <stdio.h>
+#include <string.h>
+#include <fstream>
+#include <math.h>
 
 //namespaces that is used in the project
 using namespace std;
@@ -27,6 +30,9 @@ Mat inverse_shift_rows(Mat);
 Mat slice_of_data(Mat,int,int);
 void put_back_together(Mat *, Mat, int, int);
 Mat manipulate_data_any_size_ecb(Mat,Mat, Mat callback_function(Mat,Mat));
+int char_count(fstream *);
+Mat read_and_copy_text_file_to_mat_object(const char * );
+void convert_mat_object_into_string_and_store_it_in_a_file(Mat, const char *);
 
 //macros
 #define ROWS 4

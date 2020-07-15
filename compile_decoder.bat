@@ -1,17 +1,17 @@
 g++ ^
                 -g ^
                 ./subbyte.cpp ./encrypt_block.cpp ./AES_decoder.cpp ./shift_rows.cpp ./logging_functions.cpp ./mix_columns.cpp ./add_round_key.cpp ^
-                ./data_division_into_blocks_function.cpp ./key_schedule.cpp ./inverse_subbyte.cpp ./inverse_mix_columns.cpp ./inverse_shift_rows.cpp ./decrypt_block.cpp^
+                ./function_associated_with_main.cpp ./key_schedule.cpp ./inverse_subbyte.cpp ./inverse_mix_columns.cpp ./inverse_shift_rows.cpp ./decrypt_block.cpp^
                 -o ^
                 output.exe ^
                 -I C:\OpenCV\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\include ^
                 -L C:\OpenCV\OpenCV-MinGW-Build-OpenCV-4.1.1-x64\x64\mingw\bin ^
                 -llibopencv_calib3d411 ^
                 -llibopencv_core411 ^
-                &:: -llibopencv_dnn411 ^
-                &:: -llibopencv_features2d411 ^
-                &:: -llibopencv_flann411 ^
-                &:: -llibopencv_highgui411 ^
+                -llibopencv_dnn411 ^
+                -llibopencv_features2d411 ^
+                -llibopencv_flann411 ^
+                -llibopencv_highgui411 ^
                 -llibopencv_imgcodecs411 ^
                 -llibopencv_imgproc411 
                 GOTO endcomment1
