@@ -1,65 +1,166 @@
 #include "AES.hpp"
 
 int main(int argc, char ** argv){
-    const char * file = "Linux_logo.jpg";
-    uint8_t test_block[ROWS][COLS] = {
-        {0x32, 0x88, 0x31, 0xe0},
-        {0x43, 0x5a, 0x31, 0x37},
-        {0xf6, 0x30, 0x98, 0x07},
-        {0xa8, 0x8d, 0xa2, 0x34}
-    };   
-
-    Mat iv(ROWS,COLS,CV_8UC1);
-    for (int i=0; i<ROWS; i++){
-        for (int j=0; j<COLS; j++){
-            iv.at<uint8_t>(i,j) = test_block[i][j];
+    #include "args_checks.hpp"
+        
+    if (strstr(file,".txt")!=NULL){
+        //log("inside text file encryption condition");
+        //check file existence
+        fstream check_existence(file);
+        if (!check_existence.is_open()){
+            log("ERROR: Sorry this file does not exist");
+            return 1;
         }
-    } 
- 
-    uint8_t test_key[ROWS][COLS] = {
-        {0x2b, 0x28, 0xab, 0x09},
-        {0x7e, 0xae, 0xf7, 0xcf},
-        {0x15, 0xd2, 0x15, 0x4f},
-        {0x16, 0xa6, 0x88, 0x3c}
-    };
-    
-    Mat key(ROWS,COLS,CV_8UC1);
-    for (int i=0; i<ROWS; i++){
-        for (int j=0; j<COLS; j++){
-            key.at<uint8_t>(i,j) = test_key[i][j];
+        check_existence.close();
+
+        Mat key = retrieve_arg(argc,argv,"-key");
+        
+        //log("before reading from file");
+        Mat data = read_and_copy_text_file_to_mat_object(file);
+        Mat decrypted_data;
+        //time_t time_start, time_end;
+        struct timeval stop, start;
+        //log("before condition check for mode");
+        if (search_through_program_args(argc,argv,"-cbc")){
+            Mat iv = retrieve_arg(argc,argv,"-iv");
+            //time_start = time(NULL);
+            gettimeofday(&start, NULL);
+            decrypted_data = manipulate_data_any_size_cbc(data,key,iv,decrypt_block);
+            //time_end = time(NULL);
+            gettimeofday(&stop, NULL);
+        } else {
+            //time_start = time(NULL);
+            gettimeofday(&start, NULL);
+            decrypted_data = manipulate_data_any_size_ecb(data,key,decrypt_block);
+            //time_end = time(NULL);
+            gettimeofday(&stop, NULL);
         }
+        const char * decrypted_file_name = "decrypted_file.txt";
+        //log("before writing to file");
+        convert_mat_object_into_string_and_store_it_in_a_file(decrypted_data,decrypted_file_name);
+        cout<<decrypted_file_name<<" file created that contains the decrypted text"<<endl;
+        cout<<"The decryption took about "<<(stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec<<"  micro seconds"<<endl;
+    } else if (strstr(file,".png")!=NULL || strstr(file,".png")!=NULL){
+        Mat image = imread(file,IMREAD_COLOR);    
+
+        if (image.empty()){
+            log("ERROR: Sorry the file does not exist");
+            return 1;
+        } 
+
+        Mat splitChannels[3];
+        Mat decrypted_splitChannels[3];
+        Mat key = retrieve_arg(argc,argv,"-key");
+        struct timeval stop, start;
+
+        split(image, splitChannels);
+        if (search_through_program_args(argc,argv,"-cbc")){
+            //log("inside cbc");
+            Mat iv = retrieve_arg(argc,argv,"-iv");
+            gettimeofday(&start, NULL);
+            for (int i=0; i<3; i++){
+                decrypted_splitChannels[i] = manipulate_data_any_size_cbc(splitChannels[i], key, iv, decrypt_block);
+            }
+            gettimeofday(&stop, NULL);
+        } else {
+            //log("inside ecb");
+            gettimeofday(&start, NULL);
+            for (int i=0; i<3; i++){
+                decrypted_splitChannels[i] = manipulate_data_any_size_ecb(splitChannels[i], key, decrypt_block);    
+            }
+            gettimeofday(&stop, NULL);
+        }
+
+        Mat decrypted_image;
+
+        merge(decrypted_splitChannels, 3, decrypted_image);
+        const char * decrypted_file_name = "decrypted_file.jpg";
+        imwrite(decrypted_file_name,decrypted_image);
+        cout<<decrypted_file_name<<" file created that contains the decrypted image"<<endl;
+        cout<<"The decryption took about "<<(stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec<<"  micro seconds"<<endl;
     }
-   
-    Mat image = imread(file,IMREAD_COLOR);     
-
-    Mat splitChannels[3];
-    Mat encrypted_splitChannels[3];
-    Mat decrypted_splitChannels[3];
-
-    split(image, splitChannels);
-
-    for (int i=0; i<3; i++){
-        encrypted_splitChannels[i] = manipulate_data_any_size_cbc(splitChannels[i], key, iv, encrypt_block);    
-    }
-
-    Mat encrypted_image;
-
-    merge(encrypted_splitChannels, 3, encrypted_image);
-    imshow("encrypted image", encrypted_image);
-    
-    for (int i=0; i<3; i++){
-        decrypted_splitChannels[i] = manipulate_data_any_size_cbc(encrypted_splitChannels[i], key, iv, decrypt_block);    
-    }
-
-    Mat decrypted_image;
-
-    merge(decrypted_splitChannels, 3, decrypted_image);
-    imshow("decrypted image", decrypted_image);
-
-
-    waitKey();
     return 0;
 }
+//AES_Decoder final implementation but its not working completely
+/*
+    #include "args_checks.hpp"
+        
+    if (strstr(file,".txt")!=NULL){
+        //log("inside text file encryption condition");
+        //check file existence
+        fstream check_existence(file);
+        if (!check_existence.is_open()){
+            log("ERROR: Sorry this file does not exist");
+            return 1;
+        }
+        check_existence.close();
+
+        Mat key = retrieve_arg(argc,argv,"-key");
+        
+        //log("before reading from file");
+        Mat data = read_and_copy_text_file_to_mat_object(file);
+        Mat decrypted_data;
+        //time_t time_start, time_end;
+        struct timeval stop, start;
+        //log("before condition check for mode");
+        if (search_through_program_args(argc,argv,"-cbc")){
+            Mat iv = retrieve_arg(argc,argv,"-iv");
+            //time_start = time(NULL);
+            gettimeofday(&start, NULL);
+            decrypted_data = manipulate_data_any_size_cbc(data,key,iv,decrypt_block);
+            //time_end = time(NULL);
+            gettimeofday(&stop, NULL);
+        } else {
+            //time_start = time(NULL);
+            gettimeofday(&start, NULL);
+            decrypted_data = manipulate_data_any_size_ecb(data,key,decrypt_block);
+            //time_end = time(NULL);
+            gettimeofday(&stop, NULL);
+        }
+        const char * decrypted_file_name = "decrypted_file.txt";
+        //log("before writing to file");
+        convert_mat_object_into_string_and_store_it_in_a_file(decrypted_data,decrypted_file_name);
+        cout<<decrypted_file_name<<" file created that contains the decrypted text"<<endl;
+        cout<<"The decryption took about "<<(stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec<<"  micro seconds"<<endl;
+    } else if (strstr(file,".jpg")!=NULL){
+        Mat image = imread(file,IMREAD_COLOR);    
+
+        if (image.empty()){
+            log("ERROR: Sorry the file does not exist");
+            return 1;
+        } 
+
+        Mat splitChannels[3];
+        Mat decrypted_splitChannels[3];
+        Mat key = retrieve_arg(argc,argv,"-key");
+        struct timeval stop, start;
+
+        split(image, splitChannels);
+        if (search_through_program_args(argc,argv,"-cbc")){
+            Mat iv = retrieve_arg(argc,argv,"-iv");
+            gettimeofday(&start, NULL);
+            for (int i=0; i<3; i++){
+                decrypted_splitChannels[i] = manipulate_data_any_size_cbc(splitChannels[i], key, iv, decrypt_block);    
+            }
+            gettimeofday(&stop, NULL);
+        } else {
+            gettimeofday(&start, NULL);
+            for (int i=0; i<3; i++){
+                decrypted_splitChannels[i] = manipulate_data_any_size_ecb(splitChannels[i], key, decrypt_block);    
+            }
+            gettimeofday(&stop, NULL);
+        }
+
+        Mat decrypted_image;
+
+        merge(decrypted_splitChannels, 3, decrypted_image);
+        const char * decrypted_file_name = "decrypted_file.jpg";
+        imwrite(decrypted_file_name,decrypted_image);
+        cout<<decrypted_file_name<<" file created that contains the decrypted image"<<endl;
+        cout<<"The decryption took about "<<(stop.tv_sec - start.tv_sec) * 1000000 + stop.tv_usec - start.tv_usec<<"  micro seconds"<<endl;
+   }
+*/
+
 // testing text encryption and decryption for cbc mode
 /*
     const char * file_to_read = "text.txt";

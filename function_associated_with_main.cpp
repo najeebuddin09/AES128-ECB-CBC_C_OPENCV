@@ -66,7 +66,7 @@ Mat read_and_copy_text_file_to_mat_object(const char * file){
         int number_of_char;
         number_of_char = char_count(&file_handler);
         int number_of_columns = ceil(number_of_char/ROWS);
-        //printf("number of column: %d number of char: %d\n",number_of_columns,number_of_char);
+        printf("number of column: %d number of char: %d\n",number_of_columns,number_of_char);
         Mat data = Mat::zeros(ROWS, number_of_columns,CV_8UC1); 
         char a;
         file_handler.read(&a,1);
@@ -126,6 +126,7 @@ Mat manipulate_data_any_size_cbc(Mat block, Mat key, Mat iv, Mat callback_functi
             crop = slice_of_data(block, x_axis, y_axis);
             //printf("x_axis %d y_axis %d block\n",x_axis,y_axis);
             //log_block(crop);
+            #if ENCODER == 1 && DECODER == 1
             if (callback_function == encrypt_block){
                 crop = add_round_key(crop, iv);
                 crop = callback_function(crop,key);
@@ -136,6 +137,16 @@ Mat manipulate_data_any_size_cbc(Mat block, Mat key, Mat iv, Mat callback_functi
                 iv = crop;
                 crop = decrypted_crop;
             }
+            #elif ENCODER == 1
+            crop = add_round_key(crop, iv);
+            crop = callback_function(crop,key);
+            iv = crop;
+            #elif DECODER == 1
+            decrypted_crop = callback_function(crop,key);
+            decrypted_crop = add_round_key(decrypted_crop, iv);
+            iv = crop;
+            crop = decrypted_crop;
+            #endif
             put_back_together(&encrypted_block, crop, x_axis, y_axis);
             //printf("x_axis %d y_axis %d encrypted block\n",x_axis,y_axis);
             //log_block(crop);
@@ -145,4 +156,26 @@ Mat manipulate_data_any_size_cbc(Mat block, Mat key, Mat iv, Mat callback_functi
         y_axis += ROWS;
     }
     return encrypted_block;
+}
+
+int search_through_program_args(int argc, char ** argv, const char * search_for){
+    for (int i=1; i<argc; i++){
+        if(!strcmp(argv[i],search_for)){
+            return i;
+        }
+    }
+    return 0;
+}
+
+Mat retrieve_arg(int argc, char ** argv, const char * type){
+    unsigned char a[ROWS*COLS];
+    Mat type_key(ROWS,COLS,CV_8UC1);
+    sscanf(argv[search_through_program_args(argc,argv,type)+1],"%x",a);
+    int k = 15;
+    for (int i=0; i<ROWS; i++){
+        for (int j=0; j<COLS; j++){
+            type_key.at<uint8_t>(i,j) = a[k];
+        }
+    }
+    return type_key;
 }

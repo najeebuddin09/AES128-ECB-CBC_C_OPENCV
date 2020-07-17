@@ -2,11 +2,12 @@
 #include <opencv2/opencv.hpp>
 #include <stdint.h>
 #include <iostream>
-#include <sstream>
 #include <stdio.h>
 #include <string.h>
 #include <fstream>
 #include <math.h>
+#include <string.h>
+#include <sys/time.h>
 
 //namespaces that is used in the project
 using namespace std;
@@ -34,6 +35,8 @@ int char_count(fstream *);
 Mat read_and_copy_text_file_to_mat_object(const char * );
 void convert_mat_object_into_string_and_store_it_in_a_file(Mat, const char *);
 Mat manipulate_data_any_size_cbc(Mat, Mat , Mat , Mat callback_function(Mat,Mat));
+int search_through_program_args(int , char ** , const char * );
+Mat retrieve_arg(int , char ** , const char * );
 
 //macros
 #define ROWS 4
